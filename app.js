@@ -60,16 +60,39 @@ $(function(){
                 let template = '';
                 tasks.forEach(task => {
                     // console.log(task)
-                    template += `<tr>
-                    <td>${task.id}</td>
-                    <td>${task.name}</td>
-                    <td>${task.description}</td>
+                    template += `
+                    <tr task-id="${task.id}">
+                        <td>${task.id}</td>
+                        <td>${task.name}</td>
+                        <td>${task.description}</td>
+                        <td>
+                            <button class="btn btn-danger task-delete">
+                                Delete
+                            </button>
+                        </td>
                     </tr>`
                 });
                 $('#tasks').html(template);
             }
         });
     }
+
+    $(document).on('click','.task-delete' , function(){
+        if(confirm('Are you sure you want to delete it?')){
+
+            // console.log('clicked');
+            // console.log($(this));
+            let element = $(this)[0].parentElement.parentElement;
+            // console.log(element);
+            let id = $(element).attr('task-id');
+            // console.log(id);
+            $.post('task-delete.php' , {id} , function(response){
+                console.log(response);
+                fecthTask();
+            });
+        }
+
+    })
 
 
 }) 
