@@ -2,6 +2,7 @@
 $(function(){
     // console.log('Jquery is working');
     $('#task-result').hide();
+    fecthTask();  
 
     $('#search').keyup(function(){
         if($('#search').val()){
@@ -39,6 +40,7 @@ $(function(){
         // console.log(postData);
         $.post('task-add.php',postData, function(response){
             console.log(response);
+            fecthTask();
             $('#task-form').trigger('reset');
             // alert("response"); //doesnt work the alert
         });
@@ -46,5 +48,28 @@ $(function(){
 
         e.preventDefault();
     })
+
+    function fecthTask(){
+        $.ajax({
+            url:'task-list.php',
+            type: 'GET',
+            success: function(response){
+                // console.log(response);
+                let tasks = JSON.parse(response);
+                // console.log(tasks);
+                let template = '';
+                tasks.forEach(task => {
+                    // console.log(task)
+                    template += `<tr>
+                    <td>${task.id}</td>
+                    <td>${task.name}</td>
+                    <td>${task.description}</td>
+                    </tr>`
+                });
+                $('#tasks').html(template);
+            }
+        });
+    }
+
 
 }) 
