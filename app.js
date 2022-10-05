@@ -1,5 +1,6 @@
 
 $(function(){
+    let edit = false;
     // console.log('Jquery is working');
     $('#task-result').hide();
     fecthTask();  
@@ -35,15 +36,18 @@ $(function(){
         const postData = {
             name: $('#name').val(),
             description: $('#description').val(),
-            // id: $('id').val(),
+            id: $('#taskId').val(),
         }
         // console.log(postData);
-        $.post('task-add.php',postData, function(response){
+        let url = edit === false ? 'task-add.php' : 'task-edit.php'
+        // console.log(url);
+        $.post(url, postData, function(response){
             console.log(response);
             fecthTask();
             $('#task-form').trigger('reset');
             // alert("response"); //doesnt work the alert
         });
+        edit = false;
 
 
         e.preventDefault();
@@ -63,7 +67,9 @@ $(function(){
                     template += `
                     <tr task-id="${task.id}">
                         <td>${task.id}</td>
-                        <td>${task.name}</td>
+                        <td>
+                            <strong><a href="#" class="task-item text-success">${task.name}</a></strong>
+                        </td>
                         <td>${task.description}</td>
                         <td>
                             <button class="btn btn-danger task-delete">
@@ -91,6 +97,26 @@ $(function(){
                 fecthTask();
             });
         }
+
+    })
+    $(document).on('click','.task-item' , function(){
+
+            // console.log('editing');
+            let element = $(this)[0].parentElement.parentElement.parentElement;
+            // console.log(element);
+            let id = $(element).attr('task-id');
+            // console.log(id);
+            $.post('task-single.php' , {id} , function(response){
+                // console.log(response);
+                
+                const task = JSON.parse(response);
+                
+                // console.log(task[0]);
+                edit = true;
+                $('#name').val(task[0].name);
+                $('#description').val(task[0].description);
+                $('#taskId').val(task[0].id);
+            });
 
     })
 
