@@ -3,7 +3,7 @@ $(function(){
     // console.log('Jquery is working');
     $('#task-result').hide();
 
-    $('#search').keyup(function(e){
+    $('#search').keyup(function(){
         if($('#search').val()){
             let search = $('#search').val();
             // console.log(sear ch);
@@ -27,6 +27,24 @@ $(function(){
                 }
             });
         }
+    })
+
+    $('#task-form').submit( function(e){
+        // console.log('submiting');
+        const postData = {
+            name: $('#name').val(),
+            description: $('#description').val(),
+            // id: $('id').val(),
+        }
+        // console.log(postData);
+        $.post('task-add.php',postData, function(response){
+            console.log(response);
+            $('#task-form').trigger('reset');
+            // alert("response"); //doesnt work the alert
+        });
+
+
+        e.preventDefault();
     })
 
 }) 
